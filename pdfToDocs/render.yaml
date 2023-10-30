@@ -1,0 +1,8 @@
+build:
+  - name: Node
+    env: node
+    useYarn: true
+
+  - name: Python
+    env: python
+    pythonVersion: 3.8
