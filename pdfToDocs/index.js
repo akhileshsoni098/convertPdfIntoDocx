@@ -1,4 +1,6 @@
 
+ 
+
 const express = require('express');
 const multer = require('multer');
 const { PythonShell } = require('python-shell');
@@ -7,15 +9,12 @@ const fs = require('fs');
 const app = express();
 const port = 3005;
 
-// Define the destination folder for multer
 const uploadDestination = 'uploads';
 
-// Create the destination folder if it doesn't exist
 if (!fs.existsSync(uploadDestination)) {
   fs.mkdirSync(uploadDestination);
 }
 
-// Set up multer for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, uploadDestination);
@@ -24,17 +23,17 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + path.extname(file.originalname));
   },
 });
-
+ 
 const upload = multer({ storage });
 
-
-// Handle file upload and conversion
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'templates/index.html'));
+});
 app.post('/pdftodocx', upload.single('pdf'), (req, res) => {
   if (!req.file) {
     return res.status(400).send('No file uploaded.');
   }
 
-  // Execute the Python script to convert PDF to DOCX
   const pyshell = new PythonShell('convert_pdf_to_docx.py', {
     mode: 'text',
     pythonPath: 'python', // Use the correct path to the Python executable
@@ -58,7 +57,6 @@ app.post('/pdftodocx', upload.single('pdf'), (req, res) => {
 
     const docxFilePath = req.file.path.replace('.pdf',".doc");
 console.log(docxFilePath)
-  // return  res.sendFile(docxFilePath)
  
  return   res.download(docxFilePath, "converted.doc", (err) => {
       if (err) {
@@ -71,4 +69,4 @@ console.log(docxFilePath)
  
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
-});
+}); 
