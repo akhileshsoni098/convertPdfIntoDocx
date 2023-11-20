@@ -1,6 +1,4 @@
 
- 
-
 const express = require('express');
 const multer = require('multer');
 const { PythonShell } = require('python-shell');
@@ -29,6 +27,7 @@ const upload = multer({ storage });
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'templates/index.html'));
 });
+
 app.post('/pdftodocx', upload.single('pdf'), (req, res) => {
   if (!req.file) {
     return res.status(400).send('No file uploaded.');
